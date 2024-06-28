@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "coffee-stain"
+name = "coffee_stain"
 version = "0.1.0"
 dependencies = [
  "colored",

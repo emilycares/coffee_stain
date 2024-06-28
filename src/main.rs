@@ -1,12 +1,5 @@
 use std::io;
 
-mod diff;
-mod message;
-mod parser;
-
-#[cfg(test)]
-mod test_data;
-
 fn main() {
     let stdin = io::stdin();
     eprintln!("Please paste the line that includes: \n  - \"org.opentest4j.AssertionFailedError: expected: <*> but was: <*>\" \n");
