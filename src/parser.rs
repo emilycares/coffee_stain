@@ -116,9 +116,9 @@ pub fn parse(input: &str) -> IResult<&str, AssertionFailedError> {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::{
+    use crate::{parser::{
         parse, parse_field_value_kind, parse_map, AssertionFailedError, Dto, DtoField, ValueKind,
-    };
+    }, test_data};
     use pretty_assertions::assert_eq;
 
     #[test]
@@ -227,11 +227,11 @@ mod tests {
 
     #[test]
     fn parse_map_test() {
-        let input = "eee=Comlicated(a=b, b=2, c=500, d=600)";
+        let input = "eee=Complicated(a=b, b=2, c=500, d=600)";
         let expected = ValueKind::Map(vec![ValueKind::Field(Box::new(DtoField {
             name: "eee",
             value: ValueKind::Dto(Dto {
-                name: "Comlicated",
+                name: "Complicated",
                 fields: vec![
                     DtoField {
                         name: "a",
@@ -258,274 +258,8 @@ mod tests {
 
     #[test]
     fn parse_complicated() {
-        let input = "org.opentest4j.AssertionFailedError: expected: <Comlicated(a=hey, b=2, c=500, d=600, e={eee=Comlicated(a=a, b=2, c=500, d=600, e={}, f=[], g=[])}, f=[Comlicated(a=thing, b=2, c=500, d=600, e={}, f=[], g=[])], g=[Comlicated(a=hehe, b=2, c=500, d=600, e={}, f=[], g=[])])> but was: <Comlicated(a=hey, b=2, c=500, d=600, e={eee=Comlicated(a=b, b=2, c=500, d=600, e={}, f=[], g=[])}, f=[Comlicated(a=thing, b=2, c=500, d=600, e={}, f=[], g=[])], g=[Comlicated(a=hehe, b=2, c=500, d=600, e={}, f=[], g=[])])>";
-        let expected = AssertionFailedError {
-            expected: ValueKind::Dto(Dto {
-                name: "Comlicated",
-                fields: vec![
-                    DtoField {
-                        name: "a",
-                        value: ValueKind::String("hey"),
-                    },
-                    DtoField {
-                        name: "b",
-                        value: ValueKind::String("2"),
-                    },
-                    DtoField {
-                        name: "c",
-                        value: ValueKind::String("500"),
-                    },
-                    DtoField {
-                        name: "d",
-                        value: ValueKind::String("600"),
-                    },
-                    DtoField {
-                        name: "e",
-                        value: ValueKind::Map(vec![ValueKind::Field(Box::new(DtoField {
-                            name: "eee",
-                            value: ValueKind::Dto(Dto {
-                                name: "Comlicated",
-                                fields: vec![
-                                    DtoField {
-                                        name: "a",
-                                        value: ValueKind::String("a"),
-                                    },
-                                    DtoField {
-                                        name: "b",
-                                        value: ValueKind::String("2"),
-                                    },
-                                    DtoField {
-                                        name: "c",
-                                        value: ValueKind::String("500"),
-                                    },
-                                    DtoField {
-                                        name: "d",
-                                        value: ValueKind::String("600"),
-                                    },
-                                    DtoField {
-                                        name: "e",
-                                        value: ValueKind::Map(vec![ValueKind::String("")]),
-                                    },
-                                    DtoField {
-                                        name: "f",
-                                        value: ValueKind::Array(vec![ValueKind::String("")]),
-                                    },
-                                    DtoField {
-                                        name: "g",
-                                        value: ValueKind::Array(vec![ValueKind::String("")]),
-                                    },
-                                ],
-                            }),
-                        }))]),
-                    },
-                    DtoField {
-                        name: "f",
-                        value: ValueKind::Array(vec![ValueKind::Dto(Dto {
-                            name: "Comlicated",
-                            fields: vec![
-                                DtoField {
-                                    name: "a",
-                                    value: ValueKind::String("thing"),
-                                },
-                                DtoField {
-                                    name: "b",
-                                    value: ValueKind::String("2"),
-                                },
-                                DtoField {
-                                    name: "c",
-                                    value: ValueKind::String("500"),
-                                },
-                                DtoField {
-                                    name: "d",
-                                    value: ValueKind::String("600"),
-                                },
-                                DtoField {
-                                    name: "e",
-                                    value: ValueKind::Map(vec![ValueKind::String("")]),
-                                },
-                                DtoField {
-                                    name: "f",
-                                    value: ValueKind::Array(vec![ValueKind::String("")]),
-                                },
-                                DtoField {
-                                    name: "g",
-                                    value: ValueKind::Array(vec![ValueKind::String("")]),
-                                },
-                            ],
-                        })]),
-                    },
-                    DtoField {
-                        name: "g",
-                        value: ValueKind::Array(vec![ValueKind::Dto(Dto {
-                            name: "Comlicated",
-                            fields: vec![
-                                DtoField {
-                                    name: "a",
-                                    value: ValueKind::String("hehe"),
-                                },
-                                DtoField {
-                                    name: "b",
-                                    value: ValueKind::String("2"),
-                                },
-                                DtoField {
-                                    name: "c",
-                                    value: ValueKind::String("500"),
-                                },
-                                DtoField {
-                                    name: "d",
-                                    value: ValueKind::String("600"),
-                                },
-                                DtoField {
-                                    name: "e",
-                                    value: ValueKind::Map(vec![ValueKind::String("")]),
-                                },
-                                DtoField {
-                                    name: "f",
-                                    value: ValueKind::Array(vec![ValueKind::String("")]),
-                                },
-                                DtoField {
-                                    name: "g",
-                                    value: ValueKind::Array(vec![ValueKind::String("")]),
-                                },
-                            ],
-                        })]),
-                    },
-                ],
-            }),
-            real: ValueKind::Dto(Dto {
-                name: "Comlicated",
-                fields: vec![
-                    DtoField {
-                        name: "a",
-                        value: ValueKind::String("hey"),
-                    },
-                    DtoField {
-                        name: "b",
-                        value: ValueKind::String("2"),
-                    },
-                    DtoField {
-                        name: "c",
-                        value: ValueKind::String("500"),
-                    },
-                    DtoField {
-                        name: "d",
-                        value: ValueKind::String("600"),
-                    },
-                    DtoField {
-                        name: "e",
-                        value: ValueKind::Map(vec![ValueKind::Field(Box::new(DtoField {
-                            name: "eee",
-                            value: ValueKind::Dto(Dto {
-                                name: "Comlicated",
-                                fields: vec![
-                                    DtoField {
-                                        name: "a",
-                                        value: ValueKind::String("b"),
-                                    },
-                                    DtoField {
-                                        name: "b",
-                                        value: ValueKind::String("2"),
-                                    },
-                                    DtoField {
-                                        name: "c",
-                                        value: ValueKind::String("500"),
-                                    },
-                                    DtoField {
-                                        name: "d",
-                                        value: ValueKind::String("600"),
-                                    },
-                                    DtoField {
-                                        name: "e",
-                                        value: ValueKind::Map(vec![ValueKind::String("")]),
-                                    },
-                                    DtoField {
-                                        name: "f",
-                                        value: ValueKind::Array(vec![ValueKind::String("")]),
-                                    },
-                                    DtoField {
-                                        name: "g",
-                                        value: ValueKind::Array(vec![ValueKind::String("")]),
-                                    },
-                                ],
-                            }),
-                        }))]),
-                    },
-                    DtoField {
-                        name: "f",
-                        value: ValueKind::Array(vec![ValueKind::Dto(Dto {
-                            name: "Comlicated",
-                            fields: vec![
-                                DtoField {
-                                    name: "a",
-                                    value: ValueKind::String("thing"),
-                                },
-                                DtoField {
-                                    name: "b",
-                                    value: ValueKind::String("2"),
-                                },
-                                DtoField {
-                                    name: "c",
-                                    value: ValueKind::String("500"),
-                                },
-                                DtoField {
-                                    name: "d",
-                                    value: ValueKind::String("600"),
-                                },
-                                DtoField {
-                                    name: "e",
-                                    value: ValueKind::Map(vec![ValueKind::String("")]),
-                                },
-                                DtoField {
-                                    name: "f",
-                                    value: ValueKind::Array(vec![ValueKind::String("")]),
-                                },
-                                DtoField {
-                                    name: "g",
-                                    value: ValueKind::Array(vec![ValueKind::String("")]),
-                                },
-                            ],
-                        })]),
-                    },
-                    DtoField {
-                        name: "g",
-                        value: ValueKind::Array(vec![ValueKind::Dto(Dto {
-                            name: "Comlicated",
-                            fields: vec![
-                                DtoField {
-                                    name: "a",
-                                    value: ValueKind::String("hehe"),
-                                },
-                                DtoField {
-                                    name: "b",
-                                    value: ValueKind::String("2"),
-                                },
-                                DtoField {
-                                    name: "c",
-                                    value: ValueKind::String("500"),
-                                },
-                                DtoField {
-                                    name: "d",
-                                    value: ValueKind::String("600"),
-                                },
-                                DtoField {
-                                    name: "e",
-                                    value: ValueKind::Map(vec![ValueKind::String("")]),
-                                },
-                                DtoField {
-                                    name: "f",
-                                    value: ValueKind::Array(vec![ValueKind::String("")]),
-                                },
-                                DtoField {
-                                    name: "g",
-                                    value: ValueKind::Array(vec![ValueKind::String("")]),
-                                },
-                            ],
-                        })]),
-                    },
-                ],
-            }),
-        };
+        let input = "org.opentest4j.AssertionFailedError: expected: <Complicated(a=hey, b=2, c=500, d=600, e={eee=Complicated(a=a, b=2, c=500, d=600, e={}, f=[], g=[])}, f=[Complicated(a=thing, b=2, c=500, d=600, e={}, f=[], g=[])], g=[Complicated(a=hehe, b=2, c=500, d=600, e={}, f=[], g=[])])> but was: <Complicated(a=hey, b=2, c=500, d=600, e={eee=Complicated(a=b, b=2, c=500, d=600, e={}, f=[], g=[])}, f=[Complicated(a=thing, b=2, c=500, d=600, e={}, f=[], g=[])], g=[Complicated(a=hehe, b=2, c=500, d=600, e={}, f=[], g=[])])>";
 
-        assert_eq!(parse(input), Ok(("", expected)));
+        assert_eq!(parse(input), Ok(("", test_data::get_complicated_expected())));
     }
 }
