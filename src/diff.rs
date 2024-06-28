@@ -42,7 +42,7 @@ pub fn diff<'a>(a: ValueKind<'a>, b: ValueKind<'a>) -> Difference<'a> {
         }
         (ValueKind::Array(a), ValueKind::Array(b)) => diff_array(a, b),
         (ValueKind::Array(_), ValueKind::Map(_)) => Difference::TypeDifference("Array", "Map"),
-        (ValueKind::Array(_), ValueKind::Dto(_)) => Difference::TypeDifference("Array", "Dto"),
+        (ValueKind::Array(_), ValueKind::Dto(_)) => Difference::TypeDifference("Array", "Class"),
         (ValueKind::Array(_), ValueKind::Field(_)) => Difference::TypeDifference("Array", "Field"),
         (ValueKind::Map(_), ValueKind::Null) => Difference::TypeDifference("Map", "null"),
         (ValueKind::Map(_), ValueKind::String(_)) => Difference::TypeDifference("Map", "String"),
@@ -50,12 +50,12 @@ pub fn diff<'a>(a: ValueKind<'a>, b: ValueKind<'a>) -> Difference<'a> {
         (ValueKind::Map(a), ValueKind::Map(b)) => diff_array(a, b),
         (ValueKind::Map(_), ValueKind::Dto(_)) => Difference::TypeDifference("Map", "Class"),
         (ValueKind::Map(_), ValueKind::Field(_)) => Difference::TypeDifference("Map", "Field"),
-        (ValueKind::Dto(_), ValueKind::Null) => Difference::TypeDifference("Dto", "null"),
-        (ValueKind::Dto(_), ValueKind::String(_)) => Difference::TypeDifference("Dto", "String"),
-        (ValueKind::Dto(_), ValueKind::Array(_)) => Difference::TypeDifference("Dto", "Array"),
-        (ValueKind::Dto(_), ValueKind::Map(_)) => Difference::TypeDifference("Dto", "Map"),
+        (ValueKind::Dto(_), ValueKind::Null) => Difference::TypeDifference("Class", "null"),
+        (ValueKind::Dto(_), ValueKind::String(_)) => Difference::TypeDifference("Class", "String"),
+        (ValueKind::Dto(_), ValueKind::Array(_)) => Difference::TypeDifference("Class", "Array"),
+        (ValueKind::Dto(_), ValueKind::Map(_)) => Difference::TypeDifference("Class", "Map"),
         (ValueKind::Dto(a), ValueKind::Dto(b)) => diff_dto(a, b),
-        (ValueKind::Dto(_), ValueKind::Field(_)) => Difference::TypeDifference("Dto", "Field"),
+        (ValueKind::Dto(_), ValueKind::Field(_)) => Difference::TypeDifference("Class", "Field"),
         (ValueKind::Field(_), ValueKind::Null) => Difference::TypeDifference("Field", "null"),
         (ValueKind::Field(_), ValueKind::String(_)) => {
             Difference::TypeDifference("Field", "String")
