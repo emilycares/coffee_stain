@@ -54,7 +54,7 @@ mod tests {
                 "org.opentest4j.AssertionFailedError: expected: <User(name=1, other=User(name=2, other=null))> but was: <User(name=1, other=null)>",
                 false
             ),
-            Some(" -> User.other \"Class\" and \"null\" are not the same Type".to_string())
+            Some(" -> User.other \"User\" and \"null\" are not the same Type".to_string())
         );
     }
 
