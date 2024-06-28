@@ -59,6 +59,17 @@ mod tests {
     }
 
     #[test]
+    fn list() {
+        assert_eq!(
+            get_hint(
+                "org.opentest4j.AssertionFailedError: expected: <[User(name=first, other=null)]> but was: <[User(name=first, other=null), User(name=second, other=null)]>",
+                false
+            ),
+            Some(" -> additional [User(name=\"second\",other=null)]".to_string())
+        );
+    }
+
+    #[test]
     fn complicated() {
         assert_eq!(
             get_hint(
