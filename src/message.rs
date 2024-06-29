@@ -27,7 +27,7 @@ pub fn message(diff: Difference, color: bool) -> String {
         Difference::CharsEqual(s) => format!("{out}{s}"),
         Difference::CharsRemove(s) if color => format!("{out}{}", s.red()),
         Difference::CharsRemove(_) => format!("{out}"),
-        Difference::CharsAdd(s) if color => format!("{out}{}", s.red()),
+        Difference::CharsAdd(s) if color => format!("{out}{}", s.green()),
         Difference::CharsAdd(s) if !color => format!("{out}{}", s),
         Difference::CharsAdd(_) => format!("{out}"),
         Difference::UndefinedLeft(v) => format!("{out}additional [{}]", message_value(v, color)),
