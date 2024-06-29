@@ -14,7 +14,7 @@ void list() {
 ``` text
 org.opentest4j.AssertionFailedError: expected: <[User(name=first, other=null)]> but was: <[User(name=first, other=null), User(name=second, other=null)]>
 
-coffee_stain output " -> additional [User(name="second",other=null)]"
+coffee_stain output " -> [ additional User(name=\"second\",other=null)]"
 ```
 ## Usage
 ### In Logana

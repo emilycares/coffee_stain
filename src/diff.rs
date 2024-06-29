@@ -7,6 +7,7 @@ pub enum Difference<'a> {
     Equal,
     TypeDifference(&'a str, &'a str),
     Child(Vec<Difference<'a>>),
+    ArrayChange(Vec<Difference<'a>>),
     DtoChange((&'a str, Vec<Difference<'a>>)),
     CharsEqual(String),
     CharsRemove(String),
@@ -128,7 +129,7 @@ fn diff_array<'a>(a: Vec<ValueKind<'a>>, b: Vec<ValueKind<'a>>) -> Difference<'a
             itertools::EitherOrBoth::Right(d) => Difference::UndefinedLeft(Some(d)),
         })
         .collect_vec();
-    return Difference::Child(o);
+    return Difference::ArrayChange(o);
 }
 
 fn diff_string<'a>(a: &'a str, b: &'a str) -> Difference<'a> {
@@ -188,7 +189,7 @@ mod tests {
                     Difference::Equal,
                     Difference::FieldValueChange((
                         "e",
-                        Box::new(Difference::Child(vec![Difference::FieldValueChange((
+                        Box::new(Difference::ArrayChange(vec![Difference::FieldValueChange((
                             "eee",
                             Box::new(Difference::DtoChange(("Complicated", vec![
                                 Difference::FieldValueChange((

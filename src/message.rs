@@ -20,8 +20,12 @@ pub fn message(diff: Difference, color: bool) -> String {
             "{out} -> {}",
             child.into_iter().map(|c| message(c, color)).join("")
         ),
+        Difference::ArrayChange(child) => format!(
+            "{out} -> [{}]",
+            child.into_iter().map(|c| message(c, color)).join("")
+        ),
         Difference::DtoChange((name, diff)) => format!(
-            "{out} -> {name}{}",
+            "{out} -> {name}({})",
             diff.into_iter().map(|c| message(c, color)).join("")
         ),
         Difference::CharsEqual(s) => format!("{out}{s}"),
@@ -30,8 +34,8 @@ pub fn message(diff: Difference, color: bool) -> String {
         Difference::CharsAdd(s) if color => format!("{out}{}", s.green()),
         Difference::CharsAdd(s) if !color => format!("{out}{}", s),
         Difference::CharsAdd(_) => format!("{out}"),
-        Difference::UndefinedLeft(v) => format!("{out}additional [{}]", message_value(v, color)),
-        Difference::UndefinedRight(v) => format!("{out} missing [{}]", message_value(v, color)),
+        Difference::UndefinedLeft(v) => format!("{out} additional {}", message_value(v, color)),
+        Difference::UndefinedRight(v) => format!("{out} missing {}", message_value(v, color)),
         Difference::ClassChange(diff) => format!("{out}{}", message(*diff, color)),
         Difference::FieldNameChange((name, diff)) => {
             format!("{out}.{name} was {}", message(*diff, color))
