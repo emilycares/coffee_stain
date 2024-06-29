@@ -12,8 +12,7 @@ pub fn get_hint(text: &str, color: bool) -> Option<String> {
             let message = message::message(difference, color);
             Some(message)
         }
-        Err(e) => {
-            dbg!(e);
+        Err(_) => {
             None
         }
     }
