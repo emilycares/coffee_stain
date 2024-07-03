@@ -70,7 +70,7 @@ fn parse_field_value_kind(input: &str) -> IResult<&str, ValueKind> {
     Ok((input, ValueKind::Field(Box::new(DtoField { name, value }))))
 }
 
-fn parse_value_kind(input: &str) -> IResult<&str, ValueKind> {
+pub fn parse_value_kind(input: &str) -> IResult<&str, ValueKind> {
     alt((
         delimited(tag("["), parse_array, tag("]")),
         delimited(tag("{"), parse_map, tag("}")),
@@ -116,9 +116,13 @@ pub fn parse(input: &str) -> IResult<&str, AssertionFailedError> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{parser::{
-        parse, parse_field_value_kind, parse_map, AssertionFailedError, Dto, DtoField, ValueKind,
-    }, test_data};
+    use crate::{
+        parser::{
+            parse, parse_field_value_kind, parse_map, AssertionFailedError, Dto, DtoField,
+            ValueKind,
+        },
+        test_data,
+    };
     use pretty_assertions::assert_eq;
 
     #[test]
@@ -260,6 +264,9 @@ mod tests {
     fn parse_complicated() {
         let input = "org.opentest4j.AssertionFailedError: expected: <Complicated(a=hey, b=2, c=500, d=600, e={eee=Complicated(a=a, b=2, c=500, d=600, e={}, f=[], g=[])}, f=[Complicated(a=thing, b=2, c=500, d=600, e={}, f=[], g=[])], g=[Complicated(a=hehe, b=2, c=500, d=600, e={}, f=[], g=[])])> but was: <Complicated(a=hey, b=2, c=500, d=600, e={eee=Complicated(a=b, b=2, c=500, d=600, e={}, f=[], g=[])}, f=[Complicated(a=thing, b=2, c=500, d=600, e={}, f=[], g=[])], g=[Complicated(a=hehe, b=2, c=500, d=600, e={}, f=[], g=[])])>";
 
-        assert_eq!(parse(input), Ok(("", test_data::get_complicated_expected())));
+        assert_eq!(
+            parse(input),
+            Ok(("", test_data::get_complicated_expected()))
+        );
     }
 }

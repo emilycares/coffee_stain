@@ -5,7 +5,7 @@ use crate::parser::{Dto, DtoField, ValueKind};
 #[derive(Debug, PartialEq)]
 pub enum Difference<'a> {
     Equal,
-    TypeDifference(&'a str, &'a str),
+    Type(&'a str, &'a str),
     Child(Vec<Difference<'a>>),
     ArrayChange(Vec<Difference<'a>>),
     DtoChange((&'a str, Vec<Difference<'a>>)),
@@ -22,48 +22,40 @@ pub enum Difference<'a> {
 pub fn diff<'a>(a: ValueKind<'a>, b: ValueKind<'a>) -> Difference<'a> {
     match (a, b) {
         (ValueKind::Null, ValueKind::Null) => Difference::Equal,
-        (ValueKind::Null, ValueKind::String(_)) => Difference::TypeDifference("null", "String"),
-        (ValueKind::Null, ValueKind::Array(_)) => Difference::TypeDifference("null", "Array"),
-        (ValueKind::Null, ValueKind::Map(_)) => Difference::TypeDifference("null", "Map"),
-        (ValueKind::Null, ValueKind::Dto(dto)) => Difference::TypeDifference("null", dto.name),
-        (ValueKind::Null, ValueKind::Field(_)) => Difference::TypeDifference("null", "Field"),
-        (ValueKind::String(_), ValueKind::Null) => Difference::TypeDifference("String", ""),
+        (ValueKind::Null, ValueKind::String(_)) => Difference::Type("null", "String"),
+        (ValueKind::Null, ValueKind::Array(_)) => Difference::Type("null", "Array"),
+        (ValueKind::Null, ValueKind::Map(_)) => Difference::Type("null", "Map"),
+        (ValueKind::Null, ValueKind::Dto(dto)) => Difference::Type("null", dto.name),
+        (ValueKind::Null, ValueKind::Field(_)) => Difference::Type("null", "Field"),
+        (ValueKind::String(_), ValueKind::Null) => Difference::Type("String", ""),
         (ValueKind::String(a), ValueKind::String(b)) => diff_string(a, b),
-        (ValueKind::String(_), ValueKind::Array(_)) => {
-            Difference::TypeDifference("String", "Array")
-        }
-        (ValueKind::String(_), ValueKind::Map(_)) => Difference::TypeDifference("String", "Map"),
-        (ValueKind::String(_), ValueKind::Dto(dto)) => Difference::TypeDifference("String", dto.name),
-        (ValueKind::String(_), ValueKind::Field(_)) => {
-            Difference::TypeDifference("String", "Field")
-        }
-        (ValueKind::Array(_), ValueKind::Null) => Difference::TypeDifference("Array", "null"),
-        (ValueKind::Array(_), ValueKind::String(_)) => {
-            Difference::TypeDifference("Array", "String")
-        }
+        (ValueKind::String(_), ValueKind::Array(_)) => Difference::Type("String", "Array"),
+        (ValueKind::String(_), ValueKind::Map(_)) => Difference::Type("String", "Map"),
+        (ValueKind::String(_), ValueKind::Dto(dto)) => Difference::Type("String", dto.name),
+        (ValueKind::String(_), ValueKind::Field(_)) => Difference::Type("String", "Field"),
+        (ValueKind::Array(_), ValueKind::Null) => Difference::Type("Array", "null"),
+        (ValueKind::Array(_), ValueKind::String(_)) => Difference::Type("Array", "String"),
         (ValueKind::Array(a), ValueKind::Array(b)) => diff_array(a, b),
-        (ValueKind::Array(_), ValueKind::Map(_)) => Difference::TypeDifference("Array", "Map"),
-        (ValueKind::Array(_), ValueKind::Dto(dto)) => Difference::TypeDifference("Array", dto.name),
-        (ValueKind::Array(_), ValueKind::Field(_)) => Difference::TypeDifference("Array", "Field"),
-        (ValueKind::Map(_), ValueKind::Null) => Difference::TypeDifference("Map", "null"),
-        (ValueKind::Map(_), ValueKind::String(_)) => Difference::TypeDifference("Map", "String"),
-        (ValueKind::Map(_), ValueKind::Array(_)) => Difference::TypeDifference("Map", "Array"),
+        (ValueKind::Array(_), ValueKind::Map(_)) => Difference::Type("Array", "Map"),
+        (ValueKind::Array(_), ValueKind::Dto(dto)) => Difference::Type("Array", dto.name),
+        (ValueKind::Array(_), ValueKind::Field(_)) => Difference::Type("Array", "Field"),
+        (ValueKind::Map(_), ValueKind::Null) => Difference::Type("Map", "null"),
+        (ValueKind::Map(_), ValueKind::String(_)) => Difference::Type("Map", "String"),
+        (ValueKind::Map(_), ValueKind::Array(_)) => Difference::Type("Map", "Array"),
         (ValueKind::Map(a), ValueKind::Map(b)) => diff_array(a, b),
-        (ValueKind::Map(_), ValueKind::Dto(dto)) => Difference::TypeDifference("Map", dto.name),
-        (ValueKind::Map(_), ValueKind::Field(_)) => Difference::TypeDifference("Map", "Field"),
-        (ValueKind::Dto(dto), ValueKind::Null) => Difference::TypeDifference(dto.name, "null"),
-        (ValueKind::Dto(dto), ValueKind::String(_)) => Difference::TypeDifference(dto.name, "String"),
-        (ValueKind::Dto(dto), ValueKind::Array(_)) => Difference::TypeDifference(dto.name, "Array"),
-        (ValueKind::Dto(dto), ValueKind::Map(_)) => Difference::TypeDifference(dto.name, "Map"),
+        (ValueKind::Map(_), ValueKind::Dto(dto)) => Difference::Type("Map", dto.name),
+        (ValueKind::Map(_), ValueKind::Field(_)) => Difference::Type("Map", "Field"),
+        (ValueKind::Dto(dto), ValueKind::Null) => Difference::Type(dto.name, "null"),
+        (ValueKind::Dto(dto), ValueKind::String(_)) => Difference::Type(dto.name, "String"),
+        (ValueKind::Dto(dto), ValueKind::Array(_)) => Difference::Type(dto.name, "Array"),
+        (ValueKind::Dto(dto), ValueKind::Map(_)) => Difference::Type(dto.name, "Map"),
         (ValueKind::Dto(a), ValueKind::Dto(b)) => diff_dto(a, b),
-        (ValueKind::Dto(dto), ValueKind::Field(_)) => Difference::TypeDifference(dto.name, "Field"),
-        (ValueKind::Field(_), ValueKind::Null) => Difference::TypeDifference("Field", "null"),
-        (ValueKind::Field(_), ValueKind::String(_)) => {
-            Difference::TypeDifference("Field", "String")
-        }
-        (ValueKind::Field(_), ValueKind::Array(_)) => Difference::TypeDifference("Field", "Array"),
-        (ValueKind::Field(_), ValueKind::Map(_)) => Difference::TypeDifference("Field", "Map"),
-        (ValueKind::Field(_), ValueKind::Dto(dto)) => Difference::TypeDifference("Field", dto.name),
+        (ValueKind::Dto(dto), ValueKind::Field(_)) => Difference::Type(dto.name, "Field"),
+        (ValueKind::Field(_), ValueKind::Null) => Difference::Type("Field", "null"),
+        (ValueKind::Field(_), ValueKind::String(_)) => Difference::Type("Field", "String"),
+        (ValueKind::Field(_), ValueKind::Array(_)) => Difference::Type("Field", "Array"),
+        (ValueKind::Field(_), ValueKind::Map(_)) => Difference::Type("Field", "Map"),
+        (ValueKind::Field(_), ValueKind::Dto(dto)) => Difference::Type("Field", dto.name),
         (ValueKind::Field(a), ValueKind::Field(b)) => diff_field(a, b),
     }
 }
@@ -74,7 +66,7 @@ fn diff_fields<'a>(a: Vec<DtoField<'a>>, b: Vec<DtoField<'a>>) -> Difference<'a>
     }
     let o = a
         .into_iter()
-        .zip_longest(b.into_iter())
+        .zip_longest(b)
         .map(|d| match d {
             itertools::EitherOrBoth::Both(a, b) => diff_field(Box::new(a), Box::new(b)),
             _ => Difference::Equal,
@@ -97,7 +89,7 @@ fn diff_field<'a>(a: Box<DtoField<'a>>, b: Box<DtoField<'a>>) -> Difference<'a> 
         return Difference::FieldValueChange((a.name, Box::new(value_diff)));
     }
 
-    return Difference::Equal;
+    Difference::Equal
 }
 
 fn diff_dto<'a>(a: Dto<'a>, b: Dto<'a>) -> Difference<'a> {
@@ -122,7 +114,7 @@ fn diff_array<'a>(a: Vec<ValueKind<'a>>, b: Vec<ValueKind<'a>>) -> Difference<'a
     }
     let o = a
         .into_iter()
-        .zip_longest(b.into_iter())
+        .zip_longest(b)
         .map(|d| match d {
             itertools::EitherOrBoth::Both(a, b) => diff(a, b),
             itertools::EitherOrBoth::Left(d) => Difference::UndefinedRight(Some(d)),
@@ -189,24 +181,29 @@ mod tests {
                     Difference::Equal,
                     Difference::FieldValueChange((
                         "e",
-                        Box::new(Difference::ArrayChange(vec![Difference::FieldValueChange((
-                            "eee",
-                            Box::new(Difference::DtoChange(("Complicated", vec![
-                                Difference::FieldValueChange((
-                                    "a",
-                                    Box::new(Difference::Child(vec![
-                                        Difference::CharsRemove("a".to_string()),
-                                        Difference::CharsAdd("b".to_string())
-                                    ]))
-                                )),
-                                Difference::Equal,
-                                Difference::Equal,
-                                Difference::Equal,
-                                Difference::Equal,
-                                Difference::Equal,
-                                Difference::Equal
-                            ])))
-                        ))]))
+                        Box::new(Difference::ArrayChange(vec![Difference::FieldValueChange(
+                            (
+                                "eee",
+                                Box::new(Difference::DtoChange((
+                                    "Complicated",
+                                    vec![
+                                        Difference::FieldValueChange((
+                                            "a",
+                                            Box::new(Difference::Child(vec![
+                                                Difference::CharsRemove("a".to_string()),
+                                                Difference::CharsAdd("b".to_string())
+                                            ]))
+                                        )),
+                                        Difference::Equal,
+                                        Difference::Equal,
+                                        Difference::Equal,
+                                        Difference::Equal,
+                                        Difference::Equal,
+                                        Difference::Equal
+                                    ]
+                                )))
+                            )
+                        )]))
                     )),
                     Difference::Equal,
                     Difference::Equal
