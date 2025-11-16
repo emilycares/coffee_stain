@@ -4,12 +4,12 @@
 - code
 
 ## Usage
-- logana In https://github.com/micmine/logana the better error message will be appended after the original one.
+- logana In https://github.com/emilycares/logana the better error message will be appended after the original one.
 - cli
 
 ## hint
 ### Example
-More examples can be found in the tests of https://github.com/micmine/coffee_stain/blob/main/src/lib.rs
+More examples can be found in the tests of https://github.com/emilycares/coffee_stain/blob/main/src/lib.rs
 ``` java
 @Test
 void list() {

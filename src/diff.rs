@@ -72,7 +72,7 @@ fn diff_fields<'a>(a: Vec<DtoField<'a>>, b: Vec<DtoField<'a>>) -> Difference<'a>
             _ => Difference::Equal,
         })
         .collect_vec();
-    return Difference::Child(o);
+    Difference::Child(o)
 }
 fn diff_field<'a>(a: Box<DtoField<'a>>, b: Box<DtoField<'a>>) -> Difference<'a> {
     if a == b {
@@ -121,7 +121,7 @@ fn diff_array<'a>(a: Vec<ValueKind<'a>>, b: Vec<ValueKind<'a>>) -> Difference<'a
             itertools::EitherOrBoth::Right(d) => Difference::UndefinedLeft(Some(d)),
         })
         .collect_vec();
-    return Difference::ArrayChange(o);
+    Difference::ArrayChange(o)
 }
 
 fn diff_string<'a>(a: &'a str, b: &'a str) -> Difference<'a> {
@@ -138,7 +138,7 @@ fn diff_string<'a>(a: &'a str, b: &'a str) -> Difference<'a> {
             difference::Difference::Rem(d) => Difference::CharsRemove(d),
         })
         .collect();
-    return Difference::Child(o);
+    Difference::Child(o)
 }
 
 #[cfg(test)]
