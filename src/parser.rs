@@ -42,7 +42,7 @@ pub struct DtoField<'a> {
 
 /// Parses the last step the value
 /// demo input: null
-fn parse_field_string_value(input: &str) -> IResult<&str, ValueKind> {
+fn parse_field_string_value(input: &str) -> IResult<&str, ValueKind<'_>> {
     let (input, value) =
         take_till(|c: char| c == ',' || c == ')' || c == ']' || c == '}' || c == '>')(input)?;
     // Assuming the next character is either ',' or ')', consume it without assigning.
@@ -52,25 +52,25 @@ fn parse_field_string_value(input: &str) -> IResult<&str, ValueKind> {
     }
 }
 
-fn parse_array(input: &str) -> IResult<&str, ValueKind> {
+fn parse_array(input: &str) -> IResult<&str, ValueKind<'_>> {
     let (input, values) = separated_list0(pair(char(','), multispace0), parse_value_kind)(input)?;
 
     Ok((input, ValueKind::Array(values)))
 }
 
-fn parse_map(input: &str) -> IResult<&str, ValueKind> {
+fn parse_map(input: &str) -> IResult<&str, ValueKind<'_>> {
     let (input, values) = separated_list0(pair(char(','), multispace0), parse_value_kind)(input)?;
 
     Ok((input, ValueKind::Map(values)))
 }
 
-fn parse_field_value_kind(input: &str) -> IResult<&str, ValueKind> {
+fn parse_field_value_kind(input: &str) -> IResult<&str, ValueKind<'_>> {
     let (input, (name, value)) = separated_pair(alpha0, tag("="), parse_value_kind)(input)?;
 
     Ok((input, ValueKind::Field(Box::new(DtoField { name, value }))))
 }
 
-pub fn parse_value_kind(input: &str) -> IResult<&str, ValueKind> {
+pub fn parse_value_kind(input: &str) -> IResult<&str, ValueKind<'_>> {
     alt((
         delimited(tag("["), parse_array, tag("]")),
         delimited(tag("{"), parse_map, tag("}")),
@@ -81,13 +81,13 @@ pub fn parse_value_kind(input: &str) -> IResult<&str, ValueKind> {
 }
 
 /// demo input: firstName=null
-fn parse_field(input: &str) -> IResult<&str, DtoField> {
+fn parse_field(input: &str) -> IResult<&str, DtoField<'_>> {
     let (input, (name, value)) = separated_pair(alpha0, tag("="), parse_value_kind)(input)?;
     Ok((input, DtoField { name, value }))
 }
 
 /// demo input: firstName=null, lastname=asd
-fn parse_field_list(input: &str) -> IResult<&str, Vec<DtoField>> {
+fn parse_field_list(input: &str) -> IResult<&str, Vec<DtoField<'_>>> {
     let (input, fields) = separated_list0(pair(char(','), multispace0), parse_field)(input)?;
     Ok((input, fields))
 }
@@ -97,7 +97,7 @@ fn is_alphabetic(c: char) -> bool {
 }
 
 /// demo input: User(firstName=null, lastname=asd)
-fn parse_dto(input: &str) -> IResult<&str, ValueKind> {
+fn parse_dto(input: &str) -> IResult<&str, ValueKind<'_>> {
     let (input, name) = take_while(is_alphabetic)(input)?;
     let (input, fields) = delimited(tag("("), parse_field_list, tag(")"))(input)?;
     let (input, _) = opt(multispace0)(input)?;
@@ -105,7 +105,7 @@ fn parse_dto(input: &str) -> IResult<&str, ValueKind> {
 }
 
 /// demo input: org.opentest4j.AssertionFailedError: expected: <User(firstName=null, lastname=asd)> but was: <User(firstName=null, lastname=aaa)>
-pub fn parse(input: &str) -> IResult<&str, AssertionFailedError> {
+pub fn parse(input: &str) -> IResult<&str, AssertionFailedError<'_>> {
     let (input, _) = take_until("expected: ")(input)?;
     let (input, _) = tag("expected: ")(input)?;
     let (input, expected) = delimited(tag("<"), parse_value_kind, tag(">"))(input)?;

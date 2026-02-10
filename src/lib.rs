@@ -20,7 +20,7 @@ pub fn get_hint(text: &str, color: bool) -> Option<String> {
 pub fn to_code(text: &str) -> Option<String> {
     match parser::parse_value_kind(text) {
         Ok((_, value)) => {
-            let code = code::value_code(value);
+            let code = code::value_code(value, 0);
             Some(code)
         }
         Err(_) => None,
@@ -96,7 +96,7 @@ mod tests {
         );
         assert_eq!(
             to_code("[User(name=first, other=null), User(name=second, other=null)]"),
-            Some("List.of(\nUser.builder()\n.name(\"first\")\n.other(null)\n.build(),\nUser.builder()\n.name(\"second\")\n.other(null)\n.build()\n)".to_string())
+            Some("List.of(\n  User.builder()\n        .name(\"first\")\n    .other(null)\n.build(),\n  User.builder()\n        .name(\"second\")\n    .other(null)\n.build()\n)".to_string())
         )
     }
 }
